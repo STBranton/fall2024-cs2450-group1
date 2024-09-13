@@ -1,3 +1,18 @@
+UVSim/
+│
+├── src/
+│   ├── UVSim.py            # Main program file
+│   ├── basicml_instructions.py   # Instruction set implementation
+│   ├── cpu.py              # CPU logic and instruction execution
+│   ├── memory.py           # Memory management
+│   └── accumulator.py      # Accumulator logic
+│
+├── tests/                  # Unit tests for individual components
+│   └── test_instructions.py
+│
+└── input/                  # Folder to store sample BasicML programs
+    └── program1.txt
+
 CS 2450, Section: 001, Group 1 - Project Repository
 
 Team Members: Kaleb, Tim (Master Chief)
