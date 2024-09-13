@@ -3,14 +3,20 @@ A basic directory structure with the folders for source code, test cases, and do
 UVSim/
 │
 ├── src/
-│   ├── UVSim.py            # Main program file
-│   ├── basicml_instructions.py   # Instruction set implementation
-│   ├── cpu.py              # CPU logic and instruction execution
-│   ├── memory.py           # Memory management
-│   └── accumulator.py      # Accumulator logic
+│   ├── UVSim.py                     # Main program file
+│   ├── file_loader.py               # File input handling logic
+│   ├── basicml_Instructions.py      # Instruction set implementation
+│   ├── cpu.py                       # CPU logic and instruction execution
+│   ├── memory.py                    # Memory management
+│   └── accumulator.py               # Accumulator logic
+│   └── command-Line_Interface.py    # Prompt user for input
 │
-├── tests/                  # Unit tests for individual components
-│   └── test_instructions.py
+├── tests/                           # Unit tests for individual components
+│   ├── test_instructions.py         # Write unit tests BasicML instructions
+│   └── test_file_loader.py          # Unit tests for file loading
+│   └── unit_tests.py                # Implement unit tests for each component
+│   └── tests1.txt                   # Test file 1 given to us
+│   └── test2.txt                    # Test file 2 given to us
 │
-└── input/                  # Folder to store sample BasicML programs
-    └── program1.txt
+└── input/                           # Folder to store sample BasicML programs (nothing is in here yet)
+    └── program1.txt                 # Sample input file [example] 
