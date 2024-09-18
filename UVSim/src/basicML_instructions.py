@@ -1,5 +1,5 @@
 # Instruction Set: Define the functions for each BasicML instruction (READ, WRITE, LOAD, etc.). Each function will interact with the memory and accumulator.
-
+#Maybe get rid of this 
 def handle_read(self, address):
     value = int(input("Enter a value: "))
     self.memory.set_value(address, value)
@@ -11,15 +11,25 @@ def handle_write(self, address):
 def handle_load(self, address):
     value = self.memory.get_value(address)
     self.accumulator.value = value
-'''
-ADD = 30 Add a word from a specific location in memory to the word in the accumulator (leave the result in the accumulator)
-SUBTRACT = 31 Subtract a word from a specific location in memory from the word in the accumulator (leave the result in the accumulator)
-DIVIDE = 32 Divide the word in the accumulator by a word from a specific location in memory (leave the result in the accumulator).
-MULTIPLY = 33 multiply a word from a specific location in memory to the word in the accumulator (leave the result in the accumulator).
 
-Control operation:
-BRANCH = 40 Branch to a specific location in memory
-BRANCHNEG = 41 Branch to a specific location in memory if the accumulator is negative.
-BRANCHZERO = 42 Branch to a specific location in memory if the accumulator is zero.
-HALT = 43 Pause the program
-'''
+def handle_add(self, address):
+    print("ADD function")
+
+def handle_subtract(self, address):
+    print("SUBTRACT function")
+
+def handle_divide(self, address):
+    print("DIVIDE function")
+
+def handle_multiply(self, address):
+    print("MULTIPLY function")
+
+def handle_branch(self, address):
+    print("BRANCH function")
+
+def handle_branchNeg(self, address):
+    print("BRANCHNEG function")
+def handle_branchZero(self, address):
+    print("branchZERO function")
+def handle_halt(self, address):
+    print("HALT function")
