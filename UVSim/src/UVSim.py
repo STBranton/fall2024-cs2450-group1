@@ -15,5 +15,5 @@ if __name__ == "__main__":
         accumulator = Accumulator()
         cpu = CPU(memory, accumulator)
 
-        while True:
+        while cpu.execute_instruction < 100:
             cpu.execute_instruction()
