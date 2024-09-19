@@ -4,7 +4,7 @@ from memory import Memory
 from accumulator import Accumulator
 from cpu import CPU
 
-if __name__ == "__UVSim__":
+if __name__ == "__main__":
     file_path = input("Enter the program file path: ")
     program = load_program_from_file(file_path)
 
