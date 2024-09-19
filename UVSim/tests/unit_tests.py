@@ -1,6 +1,6 @@
 # Implement unit tests for each component (memory, CPU, instruction execution) to ensure functionality remains consistent.
 import unittest
-from src.memory import Memory
+from UVSim.src.memory import Memory
 
 class TestMemory(unittest.TestCase):
     def test_memory_store_and_retrieve(self):
