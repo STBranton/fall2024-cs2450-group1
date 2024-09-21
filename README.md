@@ -1,6 +1,6 @@
 CS 2450, Section: 001, Group 1 - Project Repository
 
-Team Members: Kaleb, Tim (Master Chief)
+Team Members: Kaleb, Tim (Master Chief), Kaden, Sara
 CS 2450, Section: 001, Group 1 How to use this Program
 
 1.Have python Installed
