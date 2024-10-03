@@ -22,7 +22,7 @@ dist/
 *.env
 .envrc
 *.DS_Store
-
+.venv
 # Jupyter Notebook checkpoints
 .ipynb_checkpoints
 
