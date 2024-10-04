@@ -1,17 +1,29 @@
 # The CPU class will handle program execution and instruction processing.
-import basicML_instructions
+from accumulator import Accumulator
+
+
 class CPU:
-    def __init__(self, memory, accumulator):
+    def __init__(self, memory, input_handler, output_callback=None):
         self.memory = memory
-        self.accumulator = accumulator
-        self.instruction_counter = 0  # Points to the current instruction
-    def handle_read(self, address):
-        value = int(input("Enter a value: "))
-        self.memory.set_value(address,value)
+        self.accumulator = Accumulator()
+        self.program_counter = 0 # Points to the next instruction
+        self.instruction_register = None # Points to the current instruction
+        self.input_handler = input_handler
+        self.output_callback = output_callback
+
+    async def handle_read(self, address):
+        self.output_callback("Awaiting user input...")
+        input_value = await self.input_handler.get_input()
+        try:
+            int_value = int(input_value)
+        except ValueError:
+            raise ValueError(f"Invalid input '{input_value}'; expected an integer.")
+        self.memory.set_value(address, int_value)
 
     def handle_write(self, address):
         value = self.memory.get_value(address)
-        print(f"{value}")
+        output_message = f"Output: {value}"
+        self.output_callback(output_message)
 
     def handle_load(self, address):
         value = self.memory.get_value(address)
@@ -38,28 +50,29 @@ class CPU:
         self.accumulator.value = self.accumulator.value * value
 
     def handle_branch(self, address):
-        self.instruction_counter = address
+        self.program_counter = address
 
 
 
-    def handle_branchNeg(self, address):
+    def handle_branch_neg(self, address):
         if self.accumulator.value < 0:
-            self.instruction_counter = address
+            self.program_counter = address
 
-    def handle_branchZero(self, address):
+    def handle_branch_zero(self, address):
         if self.accumulator.value == 0:
-            self.instruction_counter = address
+            self.program_counter = address
 
-    def handle_halt(self, address):
-        self.instruction_counter = 100
-            
-    def execute_instruction(self):
-        instruction = self.memory.get_value(self.instruction_counter)
-        opcode = instruction // 100
-        operand = instruction % 100
+    def handle_halt(self):
+            self.program_counter = self.memory.max_size
+
+
+    async def execute_instruction(self):
+        self.instruction_register = self.memory.get_value(self.program_counter)
+        opcode = self.instruction_register // 100
+        operand = self.instruction_register % 100
         match opcode:
             case 10:
-                self.handle_read(operand)
+                await self.handle_read(operand)
             case 11:
                 self.handle_write(operand)
             case 20:
@@ -80,14 +93,17 @@ class CPU:
             #CONTROL OPERATIONS-------
             case 40:
                 self.handle_branch(operand)
+                return
             case 41:
-                self.handle_branchNeg(operand)
+                self.handle_branch_neg(operand)
+                return
             case 42:
-                self.handle_branchZero(operand)
+                self.handle_branch_zero(operand)
+                return
             case 43:
-                self.handle_halt(operand)
-            case default:
-                print("Invalid Instruction, please edit")
+                self.handle_halt()
+            case _:
+                self.output_callback("Invalid Instruction, please edit")
         
 
-        self.instruction_counter += 1  # Move to the next instruction 
+        self.program_counter += 1  # Move to the next instruction
