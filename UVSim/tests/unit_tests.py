@@ -1,10 +1,10 @@
 # Implement unit tests for each component (memory, CPU, instruction execution) to ensure functionality remains consistent.
-import unittest
-from unittest.mock import patch
-from unittest import TestCase
+import io
 import os
 import sys
-import io
+import unittest
+from unittest.mock import patch
+
 current_dir = os.path.dirname(__file__)
 
 src_dir = os.path.abspath(os.path.join(current_dir, '../src'))
@@ -220,7 +220,7 @@ class unitTests(unittest.TestCase):
         addresss_to_branch = 87
         original_address = 99
         cpu.handle_branch(addresss_to_branch)
-        self.assertEqual(cpu.instruction_counter, addresss_to_branch)
+        self.assertEqual(cpu.program_counter, addresss_to_branch)
     def test_branch2(self):
         accumulator = Accumulator()
         memory = Memory()
@@ -228,7 +228,7 @@ class unitTests(unittest.TestCase):
         addresss_to_branch = 45
         original_address = 34
         cpu.handle_branch(addresss_to_branch)
-        self.assertEqual(cpu.instruction_counter, addresss_to_branch)
+        self.assertEqual(cpu.program_counter, addresss_to_branch)
     def test_branch_neg1(self):
         accumulator = Accumulator()
         memory = Memory()
@@ -236,8 +236,8 @@ class unitTests(unittest.TestCase):
         accumulator.value = -5
         addresss_to_branch = 45
         original_address = 34
-        cpu.handle_branchNeg(addresss_to_branch)
-        self.assertEqual(cpu.instruction_counter, addresss_to_branch)
+        cpu.handle_branch_neg(addresss_to_branch)
+        self.assertEqual(cpu.program_counter, addresss_to_branch)
     def test_branch_neg2(self):
         accumulator = Accumulator()
         memory = Memory()
@@ -245,8 +245,8 @@ class unitTests(unittest.TestCase):
         accumulator.value = 10
         addresss_to_branch = 45
         original_address = 34
-        cpu.handle_branchNeg(addresss_to_branch)
-        self.assertNotEqual(cpu.instruction_counter, addresss_to_branch)
+        cpu.handle_branch_neg(addresss_to_branch)
+        self.assertNotEqual(cpu.program_counter, addresss_to_branch)
     def test_branch_zero1(self):
         accumulator = Accumulator()
         memory = Memory()
@@ -254,8 +254,8 @@ class unitTests(unittest.TestCase):
         accumulator.value = 10
         addresss_to_branch = 45
         original_address = 34
-        cpu.handle_branchZero(addresss_to_branch)
-        self.assertNotEqual(cpu.instruction_counter, addresss_to_branch)
+        cpu.handle_branch_zero(addresss_to_branch)
+        self.assertNotEqual(cpu.program_counter, addresss_to_branch)
     def test_branch_zero2(self):
         accumulator = Accumulator()
         memory = Memory()
@@ -263,22 +263,22 @@ class unitTests(unittest.TestCase):
         accumulator.value = 0
         addresss_to_branch = 56
         original_address = 32
-        cpu.handle_branchZero(addresss_to_branch)
-        self.assertEqual(cpu.instruction_counter, addresss_to_branch)
+        cpu.handle_branch_zero(addresss_to_branch)
+        self.assertEqual(cpu.program_counter, addresss_to_branch)
     def test_halt1(self):
         accumulator = Accumulator()
         memory = Memory()
         cpu = CPU(memory, accumulator)
         address= 98
         cpu.handle_halt(address)
-        cpu.instruction_counter = 100
+        cpu.program_counter = 100
     def test_halt2(self):
         accumulator = Accumulator()
         memory = Memory()
         cpu = CPU(memory, accumulator)
         address= 15
         cpu.handle_halt(address)
-        cpu.instruction_counter = 100
+        cpu.program_counter = 100
     def test_invalid_instrction(self):
         accumulator = Accumulator()
         memory = Memory()
