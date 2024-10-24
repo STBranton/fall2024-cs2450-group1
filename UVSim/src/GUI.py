@@ -14,7 +14,7 @@ from memory import Memory
 theme = {
     "default": [
         [76/255, 114/255, 29/255, 1], #dark green
-        [255/255, 255/255, 255/255, 1], #white
+        [255, 255, 255, 1], #white
         [0.9/255, 0.9/255, 0.9/255, 1] #light gray
     ],
 
@@ -41,10 +41,8 @@ class UVSimApp(App):
         self.off_color = theme[self.current_theme][1]
         self.secondary_color = theme[self.current_theme][2]
 
-        # LAYOUT SETUP
+        
         main_layout = BoxLayout(orientation='horizontal', padding=10, spacing=10)
-
-        # LEFT COLUMN FOR MAIN CONTENT
         left_column = BoxLayout(orientation='vertical', size_hint=(0.7, 1), padding=10, spacing=10)
 
         # Machine Instructions Input
@@ -96,7 +94,6 @@ class UVSimApp(App):
         left_column.add_widget(run_button)
 
         main_layout.add_widget(left_column)
-
         right_column = BoxLayout(orientation='vertical', size_hint=(0.3, 1), padding=10, spacing=10)
 
         # save_file button
@@ -118,28 +115,34 @@ class UVSimApp(App):
         right_column.add_widget(pick_file_button)
 
         # Create a horizontal layout for the new buttons
-        button_layout = BoxLayout(orientation='horizontal', size_hint=(1, 0.1), spacing=10)
+        #button_layout = BoxLayout(orientation='horizontal', size_hint=(1, 0.1), spacing=10)
 
-        # primary color button
-        primary_color_button = Button(
-            text='primary color button',
-            size_hint=(1, 0.5)
+        # Primary Color Input
+        self.primary_input = TextInput(
+            hint_text='Input primary color:',
+            size_hint=(1, 0.1),
+            multiline=False
         )
-        primary_color_button.bind(on_press=self.change_primary_color)
-        button_layout.add_widget(primary_color_button)
-        
-        # off color button
-        off_color_button = Button(
-            text='off-color',
-            size_hint=(1, 0.5)
-        )
-        off_color_button.bind(on_press=self.change_off_color)
-        button_layout.add_widget(off_color_button)
+        right_column.add_widget(self.primary_input)
 
-        right_column.add_widget(button_layout)
+        # Off-Color input
+        self.off_color_input = TextInput(
+            hint_text='Input off-color:',
+            size_hint=(1, 0.1)
+        )
+        right_column.add_widget(self.off_color_input)
+
+        # pick_color button
+        pick_color_button = Button(
+            text='Submit custom color selection',
+            size_hint=(1, 0.1),
+            #background_color=self.main_color
+        )
+        pick_color_button.bind(on_press=self.pick_color)
+        right_column.add_widget(pick_color_button)
+
 
         main_layout.add_widget(right_column)
-
         return main_layout
 
     def load_program(self, instance):
@@ -185,6 +188,9 @@ class UVSimApp(App):
         pass
 
     def pick_file(self, instance):
+        pass
+
+    def pick_color(self, instance):
         pass
 
     def change_primary_color(self, instance):
