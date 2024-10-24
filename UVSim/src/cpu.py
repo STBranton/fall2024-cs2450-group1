@@ -63,7 +63,8 @@ class CPU:
             self.program_counter = address
 
     def handle_halt(self):
-            self.program_counter = self.memory.max_size
+        self.program_counter = self.memory.max_size
+        self.output_callback("Program finished")
 
 
     async def execute_instruction(self):
