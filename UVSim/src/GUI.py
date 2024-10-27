@@ -1,5 +1,6 @@
 import asyncio
 import re
+import os
 
 from kivy.app import App
 from kivy.clock import Clock
@@ -7,6 +8,8 @@ from kivy.graphics import Color, Rectangle
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
+from kivy.uix.filechooser import FileChooserListView
+from kivy.uix.popup import Popup
 
 from cpu import CPU
 from input_handler import GUIInputHandler
@@ -180,10 +183,80 @@ class UVSimApp(App):
             self.output_display.text += f"Error: {e}\n"
 
     def save_file(self, instance):
-        pass
+        #box layout for popup
+        myBox = BoxLayout(orientation='vertical', padding=10, spacing=10)
+        
+        #text input for file path
+        self.file_path_input = TextInput(
+            hint_text='Enter folder path to save the file',
+            multiline=False
+        )
+        myBox.add_widget(self.file_path_input)
+
+        # Save button to save the file
+        save_button = Button(
+            text='Save',
+            size_hint_y=None,
+            height=40
+        )
+        
+        save_button.bind(on_press=self.confirm_save)
+
+        myBox.add_widget(save_button)
+
+        # make the pop up
+        self.popup = Popup(title='Save File',
+                        content=myBox,
+                        size_hint=(0.9, 0.4))
+        self.popup.open()
+
+    def confirm_save(self, instance):
+        #get file input from user
+        folder_path = self.file_path_input.text.strip()
+        file_name = "output.txt"  # Set your desired file name
+
+        # Attempt to save the file in the specified folder
+        try:
+
+            full_path = os.path.join(folder_path, file_name)
+            with open(full_path, 'w') as file:
+                file.write(self.machine_instructions_input.text)  # Save the output to the file
+
+            self.output_display.text += f"File saved successfully at {full_path}\n"
+        except Exception as e:
+            self.output_display.text += f"Error saving file: {e}\n"
+        
+        self.popup.dismiss()  # Close the popup after saving
+
+
+
 
     def pick_file(self, instance):
-        pass
+        #Opens a file chooser for the user to choose which file to load
+        myBox = BoxLayout(orientation='vertical')
+        filechooser = FileChooserListView()
+        myBox.add_widget(filechooser)
+
+        # Define a button to confirm the selection
+        load_button = Button(text="Load")
+        myBox.add_widget(load_button)
+
+        # Popup to hold the file chooser
+        popup = Popup(title="Pick File", content=myBox, size_hint=(0.9, 0.9))
+        popup.open()
+
+        # Callback for when the user presses the Load button
+        def on_load(button_instance):
+            # Check if a file is selected
+            if filechooser.selection:
+                file_path = filechooser.selection[0]
+                with open(file_path, 'r') as file:
+                    self.machine_instructions_input.text = file.read()  # Load file contents
+                self.output_display.text += f"File loaded from: {file_path}\n"
+            popup.dismiss()  # Close popup after loading
+
+        load_button.bind(on_press=on_load)  # Bind load button to function
+
 
     def pick_color(self, instance):
         primary_color_input = ''
