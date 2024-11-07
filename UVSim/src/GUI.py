@@ -24,7 +24,7 @@ theme = [
 class UVSimApp(App):
     def build(self):
 
-        self.memory = Memory(100)
+        self.memory = Memory(250)
         self.input_handler = GUIInputHandler(self)
         # Initialize CPU without an output callback initially
         self.is_loaded = False
