@@ -1,4 +1,5 @@
 # The CPU class will handle program execution and instruction processing.
+
 from accumulator import Accumulator
 
 
@@ -117,8 +118,9 @@ class CPU:
                 return
             case 43:
                 self.handle_halt()
+                return
             case _:
-                self.output_callback("Invalid Instruction, please edit")
+                raise ValueError("Invalid Instruction, please edit")
         
 
         self.program_counter += 1  # Move to the next instruction
