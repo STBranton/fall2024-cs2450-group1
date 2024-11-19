@@ -26,7 +26,7 @@ def main():
         return
 
     # Initialize memory and load the program
-    memory = Memory(max_size=100)
+    memory = Memory(max_size=250)
     try:
         memory.load_program(program)
     except Exception as e:
