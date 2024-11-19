@@ -1,6 +1,5 @@
 
 from input_handler import CLIInputHandler
-from file_loader import load_program_from_file
 from memory import Memory
 from cpu import CPU
 
@@ -19,7 +18,8 @@ def main():
     file_path = input("Enter the program file path: ")
 
     # Load the program from the specified file
-    program = load_program_from_file(file_path)
+    with open(file_path, 'r') as file:
+        program = [int(line.strip()) for line in file.readlines()]
 
     if not program:
         print("Failed to load the program. Please check the file and try again.")
