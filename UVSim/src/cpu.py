@@ -11,12 +11,9 @@ class CPU:
         self.input_handler = input_handler
         self.output_callback = output_callback
 
-    def check_address_space(self,address):
-        if(address >= 250):
-            raise ValueError(f"Invalid address '{address}'; expected an address space less than 250")
 
     async def handle_read(self, address):
-        self.check_address_space(address)
+        
         self.output_callback("Awaiting user input...")
         input_value = await self.input_handler.get_input()
         try:
@@ -27,54 +24,53 @@ class CPU:
         self.memory.set_value(address, int_value)
 
     def handle_write(self, address):
-        self.check_address_space(address)
+        
         value = self.memory.get_value(address)
         output_message = f"Output: {value}"
         self.output_callback(output_message)
 
     def handle_load(self, address):
-        self.check_address_space(address)
+        
         value = self.memory.get_value(address)
         self.accumulator.value = value
 
     def handle_store(self,address):
-        self.check_address_space(address)
+        
         value = self.accumulator.value
         self.memory.set_value(address, value)
 
     def handle_add(self, address):
-        self.check_address_space(address)
+        
         value = self.memory.get_value(address)
         self.accumulator.value = self.accumulator.value + value
 
     def handle_subtract(self, address):
-        self.check_address_space(address)
+        
         value = self.memory.get_value(address)
         self.accumulator.value = self.accumulator.value - value
 
     def handle_divide(self, address):
-        self.check_address_space(address)
+        
         value = self.memory.get_value(address)
         self.accumulator.value = self.accumulator.value / value
 
     def handle_multiply(self, address):
-        self.check_address_space(address)
+        
         value = self.memory.get_value(address)
         self.accumulator.value = self.accumulator.value * value
 
     def handle_branch(self, address):
-        self.check_address_space(address)
+        
         self.program_counter = address
 
 
-
     def handle_branch_neg(self, address):
-        self.check_address_space(address)
+        
         if self.accumulator.value < 0:
             self.program_counter = address
 
     def handle_branch_zero(self, address):
-        self.check_address_space(address)
+        
         if self.accumulator.value == 0:
             self.program_counter = address
 
@@ -87,6 +83,8 @@ class CPU:
         self.instruction_register = self.memory.get_value(self.program_counter)
         opcode = self.instruction_register // 1000
         operand = self.instruction_register % 1000
+        if operand >= 250:
+            raise ValueError(f"Invalid address '{operand}'; expected an address space less than 250")
         match opcode:
             case 10:
                 await self.handle_read(operand)
