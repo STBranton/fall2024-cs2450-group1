@@ -146,8 +146,7 @@ class UVSimApp(App):
         machine_instructions = self.machine_instructions_input.text
         try:
             # Convert each line to an integer
-            instructions = list(map(int, machine_instructions.strip().splitlines()))
-
+            instructions = list(machine_instructions.strip().splitlines())
             # Load the program into memory
             self.cpu.memory.load_program(instructions)
 
