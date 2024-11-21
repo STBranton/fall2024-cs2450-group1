@@ -2,7 +2,6 @@
 import io
 import os
 import sys
-import unittest
 from pathlib import Path
 from unittest.async_case import IsolatedAsyncioTestCase
 from unittest.mock import patch, AsyncMock
@@ -14,12 +13,17 @@ current_dir = os.path.dirname(__file__)
 src_dir = os.path.abspath(os.path.join(current_dir, '../src'))
 sys.path.insert(0, src_dir)
 from memory import Memory  # type: ignore
-from file_loader import load_program_from_file  # type: ignore
 from accumulator import Accumulator  # type: ignore
 from cpu import CPU  # type: ignore
 
 
 class unitTests(IsolatedAsyncioTestCase):
+    @staticmethod
+    def load_program_from_file(file_path):
+        with open(file_path, 'r') as file:
+            program = [line.strip() for line in file.readlines()]
+        return program
+
     def test_memory_store_and_retrieve1(self):
         memory = Memory(250)
         memory.set_value(10, 1234)
@@ -35,7 +39,7 @@ class unitTests(IsolatedAsyncioTestCase):
         file_path = Path(__file__).parent / "Test1.txt"
         memory = Memory(250)
         cpu = CPU(memory, input_handler=CLIInputHandler, output_callback=print)
-        program = load_program_from_file(file_path)
+        program = self.load_program_from_file(file_path)
         with self.assertRaises(ValueError) as context:
                     cpu.memory.load_program(program)
         self.assertEqual(str(context.exception), "Program instructions must all be the same length")
@@ -44,14 +48,14 @@ class unitTests(IsolatedAsyncioTestCase):
         file_path = Path(__file__).parent / "Test2.txt"
         memory = Memory(250)
         cpu = CPU(memory, input_handler=CLIInputHandler, output_callback=print)
-        program = load_program_from_file(file_path)
+        program = self.load_program_from_file(file_path)
         cpu.memory.load_program(program)
 
     def test_load_invalid_length_command(self):
         file_path = Path(__file__).parent / "Test3.txt"
         memory = Memory(250)
         cpu = CPU(memory, input_handler=CLIInputHandler, output_callback=print)
-        program = load_program_from_file(file_path)
+        program = self.load_program_from_file(file_path)
         with self.assertRaises(ValueError) as context:
             cpu.memory.load_program(program)
         self.assertEqual(str(context.exception), "Program instructions must be either 4 or 6 digits (with optional '+' or '-' sign).")
@@ -370,8 +374,8 @@ class unitTests(IsolatedAsyncioTestCase):
         memory = Memory(250)
         input_handler = CLIInputHandler()
         cpu = CPU(memory, input_handler, output_callback=print)
-        instruction = 8657
-        cpu.memory.memory[0] = instruction
+        instruction = "052232"
+        memory.load_program([instruction])
         with self.assertRaises(Exception) as context:
             await cpu.execute_instruction()
         self.assertEqual(str(context.exception), "Invalid Instruction, please edit")
@@ -380,8 +384,8 @@ class unitTests(IsolatedAsyncioTestCase):
         memory = Memory(250)
         input_handler = CLIInputHandler()
         cpu = CPU(memory, input_handler, output_callback=print)
-        instruction = -8557
-        cpu.memory.memory[0] = instruction
+        instruction = "047003"
+        memory.load_program([instruction])
         with self.assertRaises(Exception) as context:
             await cpu.execute_instruction()
         self.assertEqual(str(context.exception), "Invalid Instruction, please edit")
