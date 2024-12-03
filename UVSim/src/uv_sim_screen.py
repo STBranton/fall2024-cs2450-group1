@@ -188,7 +188,7 @@ class UVSimScreen(Screen):
         machine_instructions = self.machine_instructions_input.text
         try:
             # Convert each line to an integer
-            instructions = list(map(int, machine_instructions.strip().splitlines()))
+            instructions = list(machine_instructions.strip().splitlines())
 
             # Load the program into memory
             self.cpu.memory.load_program(instructions)
@@ -405,12 +405,13 @@ class UVSimScreen(Screen):
             self.rect = Rectangle(size=self.main_layout.size, pos=self.main_layout.pos)
         self.main_layout.bind(size=self._update_rect, pos=self._update_rect)
 
-    def _update_rect(self, instance):
+    def _update_rect(self, instance, value):
         """
         Updates the background rectangle's size and position when the layout changes.
 
         Args:
             instance: The instance triggering the change.
+            value: The value to update the rect with
         """
         self.rect.size = instance.size
         self.rect.pos = instance.pos

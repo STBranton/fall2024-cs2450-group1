@@ -140,6 +140,8 @@ class CPU:
         """
         if self.accumulator.value < 0:
             self.program_counter = address
+        else:
+            self.program_counter += 1
 
     def handle_branch_zero(self, address):
         """
@@ -150,6 +152,8 @@ class CPU:
         """
         if self.accumulator.value == 0:
             self.program_counter = address
+        else:
+            self.program_counter += 1
 
     def handle_halt(self):
         """
