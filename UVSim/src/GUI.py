@@ -19,9 +19,97 @@ theme = [
         [76/255, 114/255, 29/255, 1], #dark green
         [255, 255, 255, 1], #white
 ]
+def create_text_input(hint_text, size_hint=(1, 0.1), multiline=False, readonly=False):
+    text_input = TextInput(
+        hint_text=hint_text,
+        size_hint=size_hint,
+        multiline=multiline,
+        readonly=readonly
+    )
+    return text_input
 
 
 class UVSimApp(App):
+    
+    def create_left_column(self):
+        #create left column
+        left_column = BoxLayout(orientation='vertical', size_hint=(0.7, 1), padding=10, spacing=10)
+
+        # Machine Instructions Input Left
+        self.machine_instructions_input = create_text_input(hint_text='Machine Instructions', size_hint=(1, 0.3), multiline=True)
+        left_column.add_widget(self.machine_instructions_input)
+
+        # Console Input Left
+        self.console_input = create_text_input(hint_text='Console Input', size_hint=(1, 0.1), multiline=False, readonly=False)
+        self.console_input.bind(on_text_validate=self.submit_console_input)
+        self.console_input.disabled = True
+        left_column.add_widget(self.console_input)
+
+        # Output Display Left
+        self.output_display = create_text_input(hint_text='Output', size_hint=(1, 0.3), readonly=True, multiline=True,)
+        left_column.add_widget(self.output_display)
+
+        # Load Program Button Left
+        self.load_button = Button(
+            text='Load Program',
+            size_hint=(1, 0.1),
+            background_color=self.main_color
+        )
+        self.load_button.bind(on_press=self.load_program)
+        left_column.add_widget(self.load_button)
+
+        # Run Button Left
+        self.run_button = Button(
+            text='Run Program',
+            size_hint=(1, 0.1),
+            background_color=self.main_color
+        )
+        self.run_button.bind(on_press=self.run_program)
+        left_column.add_widget(self.run_button)
+
+        return left_column
+    
+    def create_right_column(self):
+        right_column = BoxLayout(orientation='vertical', size_hint=(0.3, 1), padding=10, spacing=10)
+
+        # save_file button Right
+        self.save_button = Button(
+            text='Save File',
+            size_hint=(1, 0.1),
+            background_color=self.main_color
+        )
+        self.save_button.bind(on_press=self.save_file)
+        right_column.add_widget(self.save_button)
+
+        # pick_file button Right
+        self.pick_file_button = Button(
+            text='Pick File',
+            size_hint=(1, 0.1),
+            background_color=self.main_color
+        )
+        self.pick_file_button.bind(on_press=self.pick_file)
+        right_column.add_widget(self.pick_file_button)
+
+        # Primary Color Input Right
+        self.primary_color_input = create_text_input(hint_text='Input primary color', size_hint=(1, 0.1), multiline=False, readonly=False)
+        right_column.add_widget(self.primary_color_input)
+
+        # Off-Color input Right
+        self.off_color_input = create_text_input(hint_text='Input off-color', size_hint=(1, 0.1), multiline=False, readonly=False)
+        right_column.add_widget(self.off_color_input)
+
+        # submit colour input button Right
+        self.submit_color_input_button = Button(
+            text='Submit custom color selection',
+            size_hint=(1, 0.1),
+            background_color=self.main_color
+        )
+        self.submit_color_input_button.bind(on_press=self.pick_color)
+        right_column.add_widget(self.submit_color_input_button)
+
+        return right_column
+    
+
     def build(self):
 
         self.memory = Memory(250)
@@ -36,109 +124,18 @@ class UVSimApp(App):
 
         
         self.main_layout = BoxLayout(orientation='horizontal', padding=10, spacing=10)
-        left_column = BoxLayout(orientation='vertical', size_hint=(0.7, 1), padding=10, spacing=10)
+
+        left_column = self.create_left_column()
+        right_column = self.create_right_column()
+        
 
         with self.main_layout.canvas.before:
             Color(*self.off_color)
             self.rect = Rectangle(size=self.main_layout.size, pos=self.main_layout.pos)
         self.main_layout.bind(size=self._update_rect, pos=self._update_rect)
 
-        # Machine Instructions Input
-        self.machine_instructions_input = TextInput(
-            hint_text='Machine Instructions',
-            size_hint=(1, 0.3),
-            multiline=True,
-        )
-        left_column.add_widget(self.machine_instructions_input)
-
-        # Console Input
-        self.console_input = TextInput(
-            hint_text='Console Input',
-            size_hint=(1, 0.1),
-            multiline=False,
-        )
-        self.console_input.bind(on_text_validate=self.submit_console_input)
-        self.console_input.disabled = True
-        left_column.add_widget(self.console_input)
-
-        # Output Display
-        self.output_display = TextInput(
-            hint_text='Output',
-            size_hint=(1, 0.3),
-            readonly=True,
-            multiline=True,
-        )
-        left_column.add_widget(self.output_display)
-
-        # Load Program Button
-        self.load_button = Button(
-            text='Load Program',
-            size_hint=(1, 0.1),
-            background_color=self.main_color
-        )
-        self.load_button.bind(on_press=self.load_program)
-        left_column.add_widget(self.load_button)
-
-        # Run Button
-        self.run_button = Button(
-            text='Run Program',
-            size_hint=(1, 0.1),
-            background_color=self.main_color
-        )
-        self.run_button.bind(on_press=self.run_program)
-        left_column.add_widget(self.run_button)
-
         self.main_layout.add_widget(left_column)
-        right_column = BoxLayout(orientation='vertical', size_hint=(0.3, 1), padding=10, spacing=10)
-
-        # save_file button
-        self.save_button = Button(
-            text='Save File',
-            size_hint=(1, 0.1),
-            background_color=self.main_color
-        )
-        self.save_button.bind(on_press=self.save_file)
-        right_column.add_widget(self.save_button)
-
-        # pick_file button
-        self.pick_file_button = Button(
-            text='Pick File',
-            size_hint=(1, 0.1),
-            background_color=self.main_color
-        )
-        self.pick_file_button.bind(on_press=self.pick_file)
-        right_column.add_widget(self.pick_file_button)
-
-        # Create a horizontal layout for the new buttons
-        #button_layout = BoxLayout(orientation='horizontal', size_hint=(1, 0.1), spacing=10)
-
-        # Primary Color Input
-        self.primary_color_input = TextInput(
-            hint_text='Input primary color:',
-            size_hint=(1, 0.1),
-            multiline=False
-        )
-        right_column.add_widget(self.primary_color_input)
-
-        # Off-Color input
-        self.off_color_input = TextInput(
-            hint_text='Input off-color:',
-            size_hint=(1, 0.1)
-        )
-        right_column.add_widget(self.off_color_input)
-
-        # submit colour input button
-        self.submit_color_input_button = Button(
-            text='Submit custom color selection',
-            size_hint=(1, 0.1),
-            background_color=self.main_color
-        )
-        self.submit_color_input_button.bind(on_press=self.pick_color)
-        right_column.add_widget(self.submit_color_input_button)
-
-
         self.main_layout.add_widget(right_column)
-
         return self.main_layout
 
 
@@ -186,10 +183,8 @@ class UVSimApp(App):
         myBox = BoxLayout(orientation='vertical', padding=10, spacing=10)
         
         #text input for file path
-        self.file_path_input = TextInput(
-            hint_text='Enter folder path to save the file',
-            multiline=False
-        )
+
+        self.file_path_input = create_text_input(hint_text='Enter folder path to save the file', size_hint=(1, 0.1), multiline=False, readonly=False) #idk if size hint is default
         myBox.add_widget(self.file_path_input)
 
         # Save button to save the file
