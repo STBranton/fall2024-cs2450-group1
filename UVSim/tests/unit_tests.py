@@ -84,7 +84,7 @@ class unitTests(IsolatedAsyncioTestCase):
             with self.assertRaises(ValueError) as context:
                 await cpu.execute_instruction()
 
-            self.assertEqual(str(context.exception), f"Invalid input '{return_value}'; expected an integer.")
+            self.assertEqual(str(context.exception), f"Invalid input '{return_value}', expected an integer.")
 
     async def test_write1(self):
         memory = Memory(250)
@@ -399,4 +399,4 @@ class unitTests(IsolatedAsyncioTestCase):
         memory.load_program([instruction])
         with self.assertRaises(ValueError) as context:
             await cpu.execute_instruction()
-        self.assertEqual(str(context.exception), f"Invalid address '{address}'; expected an address space less than 250")
+        self.assertEqual(str(context.exception), f"Invalid address '{address}'. expected an address space less than 250")
