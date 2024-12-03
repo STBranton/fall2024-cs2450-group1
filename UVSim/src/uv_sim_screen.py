@@ -24,7 +24,33 @@ theme = [
 ]
 
 class UVSimScreen(Screen):
+    """
+    Represents a screen in the UVSim application.
+
+    This screen provides a GUI for interacting with the UVSim simulator, including:
+    - Input for machine instructions and console input.
+    - Output display for program results and feedback.
+    - Buttons for loading, running, saving, and customizing the simulator.
+    - Integration with a CPU and memory model for executing instructions.
+
+    Attributes:
+        instance_number (int): The identifier for this screen instance.
+        memory (Memory): The memory object for storing instructions and data.
+        input_handler (GUIInputHandler): Handles user input asynchronously.
+        cpu (CPU): The CPU object for executing machine instructions.
+        is_loaded (bool): Indicates if a program has been loaded.
+        main_color (list): The primary theme color.
+        off_color (list): The secondary (off) theme color.
+    """
+
     def __init__(self, instance_number, **kwargs):
+        """
+        Initializes the UVSim screen with GUI elements and the simulator backend.
+
+        Args:
+            instance_number (int): The instance number of this screen.
+            **kwargs: Additional arguments passed to the parent Screen initializer.
+        """
         super().__init__(**kwargs)
         self.instance_number = instance_number
 
@@ -150,6 +176,15 @@ class UVSimScreen(Screen):
         Clock.schedule_interval(self.process_asyncio_events, 0.1)
 
     def load_program(self, instance):
+        """
+        Loads machine instructions into memory from the GUI input.
+
+        Args:
+            instance: The Kivy Button instance that triggered this action.
+
+        Displays:
+            - Feedback in the output display on successful loading or errors.
+        """
         machine_instructions = self.machine_instructions_input.text
         try:
             # Convert each line to an integer
@@ -175,6 +210,15 @@ class UVSimScreen(Screen):
             self.output_display.text += "CPU Reinitialized.\n"
 
     def run_program(self, instance):
+        """
+        Starts the execution of the loaded program asynchronously.
+
+        Args:
+            instance: The Kivy Button instance that triggered this action.
+
+        Displays:
+            - Feedback in the output display during and after execution.
+        """
         self.cpu.output_callback = self.output_callback
         self.output_display.text += "Running the program...\n"
         # Start the CPU execution asynchronously
@@ -182,6 +226,12 @@ class UVSimScreen(Screen):
         asyncio.ensure_future(self.execute_cpu())
 
     async def execute_cpu(self):
+        """
+        Executes the CPU instructions until the program counter exceeds memory size.
+
+        Handles:
+            - Errors during execution and displays them in the output display.
+        """
         try:
             while self.cpu.program_counter < self.memory.max_size:
                 await self.cpu.execute_instruction()
@@ -189,6 +239,12 @@ class UVSimScreen(Screen):
             self.output_display.text += f"Error: {e}\n"
 
     def save_file(self, instance):
+        """
+        Opens a file save dialog and saves the machine instructions to a file.
+
+        Args:
+            instance: The Kivy Button instance that triggered this action.
+        """
         # Box layout for popup
         myBox = BoxLayout(orientation='vertical', padding=10, spacing=10)
 
@@ -215,6 +271,15 @@ class UVSimScreen(Screen):
         self.popup.open()
 
     def confirm_save(self, instance):
+        """
+        Confirms and saves the machine instructions to the specified file.
+
+        Args:
+            instance: The Kivy Button instance that triggered this action.
+
+        Displays:
+            - Feedback in the output display on success or error.
+        """
         # Get file input from user
         folder_path = self.file_path_input.text.strip()
         file_name = "output.txt"  # Set your desired file name
@@ -232,17 +297,23 @@ class UVSimScreen(Screen):
         self.popup.dismiss()  # Close the popup after saving
 
     def pick_file(self, instance):
+        """
+        Opens a file chooser dialog for the user to load machine instructions.
+
+        Args:
+            instance: The Kivy Button instance that triggered this action.
+        """
         # Opens a file chooser for the user to choose which file to load
-        myBox = BoxLayout(orientation='vertical', padding=10, spacing=10)
+        box = BoxLayout(orientation='vertical', padding=10, spacing=10)
         filechooser = FileChooserListView()
-        myBox.add_widget(filechooser)
+        box.add_widget(filechooser)
 
         # Define a button to confirm the selection
         load_button = Button(text="Load", size_hint_y=None, height=40)
-        myBox.add_widget(load_button)
+        box.add_widget(load_button)
 
         # Create the popup
-        popup = Popup(title="Pick File", content=myBox, size_hint=(0.9, 0.9))
+        popup = Popup(title="Pick File", content=box, size_hint=(0.9, 0.9))
         popup.open()
 
         # Callback for when the user presses the Load button
@@ -258,6 +329,12 @@ class UVSimScreen(Screen):
         load_button.bind(on_press=on_load)  # Bind load button to function
 
     def pick_color(self, instance):
+        """
+        Updates the application's theme colors based on user input.
+
+        Args:
+            instance: The Kivy Button instance that triggered this action.
+        """
         primary_color_input = ''
         off_color_input = ''
         if self.primary_color_input.text != "":
@@ -277,9 +354,13 @@ class UVSimScreen(Screen):
 
     def parse_color_input(self, color_input):
         """
-        Parse and validate a color input in either hex format (#RRGGBB, #RRGGBBAA)
-        or r,g,b,a format. Returns a list of [r, g, b, a] with values in range 0 to 1.
-        Returns None if the input is invalid.
+        Parses and validates a color input in either hex (#RRGGBB) or rgba (r,g,b,a) format.
+
+        Args:
+            color_input (str): The color input string.
+
+        Returns:
+            list: A list representing the color as [r, g, b, a], or None if invalid.
         """
         # Check for hex format
         hex_match = re.match(r'^#([A-Fa-f0-9]{6})([A-Fa-f0-9]{2})?$', color_input.strip())
@@ -312,6 +393,9 @@ class UVSimScreen(Screen):
         return None
 
     def update_theme(self):
+        """
+        Updates the theme colors of all UI components based on the selected theme.
+        """
         self.main_color = theme[0]
         self.off_color = theme[1]
         for button in [self.load_button, self.run_button, self.save_button, self.submit_color_input_button, self.pick_file_button]:
@@ -321,11 +405,23 @@ class UVSimScreen(Screen):
             self.rect = Rectangle(size=self.main_layout.size, pos=self.main_layout.pos)
         self.main_layout.bind(size=self._update_rect, pos=self._update_rect)
 
-    def _update_rect(self, instance, value):
+    def _update_rect(self, instance):
+        """
+        Updates the background rectangle's size and position when the layout changes.
+
+        Args:
+            instance: The instance triggering the change.
+        """
         self.rect.size = instance.size
         self.rect.pos = instance.pos
 
     def submit_console_input(self, instance):
+        """
+        Handles console input submission and provides it to the input handler.
+
+        Args:
+            instance: The Kivy TextInput instance that triggered this action.
+        """
         console_input_text = self.console_input.text
         self.output_display.text += f"Console Input: {console_input_text}\n"
         self.input_handler.provide_input(console_input_text)
@@ -334,18 +430,27 @@ class UVSimScreen(Screen):
 
     def enable_console_input(self):
         """
-        Called by GUIInputHandler to enable the console input field.
+        Enables the console input field for user interaction, called by the input handler.
         """
         self.console_input.disabled = False
         self.console_input.focus = True
 
     def output_callback(self, message):
         """
-        Receives output from the CPU and displays it in the GUI.
+        Handles CPU output by appending it to the output display.
+
+        Args:
+            message (str): The message to display.
         """
         self.output_display.text += f"{message}\n"
 
     def process_asyncio_events(self, dt):
+        """
+        Processes pending asyncio events for smooth integration with the Kivy event loop.
+
+        Args:
+            dt: The time interval since the last call.
+        """
         try:
             # Process pending asyncio tasks
             self.input_handler.loop.call_soon_threadsafe(lambda: None)
@@ -354,5 +459,8 @@ class UVSimScreen(Screen):
             self.output_display.text += f"Asyncio Error: {e}\n"
 
     def on_stop(self):
+        """
+        Cleans up resources and stops the asyncio event loop when the application exits.
+        """
         # Clean up the asyncio loop on application exit
         self.input_handler.loop.stop()

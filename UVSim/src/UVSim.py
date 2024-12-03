@@ -1,11 +1,20 @@
-
-from input_handler import CLIInputHandler
-from memory import Memory
-from cpu import CPU
-
 import asyncio
 
+from cpu import CPU
+from input_handler import CLIInputHandler
+from memory import Memory
+
+
 async def run_program(cpu):
+    """
+    Executes a program loaded into the CPU until a halt instruction or error occurs.
+
+    Args:
+        cpu: An instance of the CPU class, initialized with memory and handlers.
+
+    Raises:
+        Exception: If an error occurs during program execution, it is caught and printed.
+    """
     try:
         while cpu.program_counter < cpu.memory.max_size:
             await cpu.execute_instruction()
@@ -14,12 +23,28 @@ async def run_program(cpu):
 
 
 def main():
+    """
+    The main entry point for the program execution.
+
+    - Prompts the user for a file path containing the program to execute.
+    - Loads the program into memory.
+    - Initializes the CPU with the loaded program and necessary handlers.
+    - Executes the program in an asynchronous event loop.
+
+    Handles:
+        - Input/Output errors when loading the program file.
+        - Exceptions during memory initialization and program execution.
+        - Graceful interruption on a keyboard interrupt.
+
+    Raises:
+        Exception: If an unexpected error occurs during any step, it is caught and printed.
+    """
     # Prompt user for the program file path
     file_path = input("Enter the program file path: ")
 
     # Load the program from the specified file
     with open(file_path, 'r') as file:
-        program = [int(line.strip()) for line in file.readlines()]
+        program = [line.strip() for line in file.readlines()]
 
     if not program:
         print("Failed to load the program. Please check the file and try again.")
