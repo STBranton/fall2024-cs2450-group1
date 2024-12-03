@@ -4,6 +4,9 @@ from cpu import CPU
 from input_handler import CLIInputHandler
 from memory import Memory
 
+"""
+CLI for UVSim
+"""
 
 async def run_program(cpu):
     """
