@@ -18,5 +18,10 @@ UVSim/
 │   └── tests1.txt                   # Test file 1 given to us
 │   └── test2.txt                    # Test file 2 given to us
 │
-└── input/                           # Folder to store sample BasicML programs (nothing is in here yet)
-    └── program1.txt                 # Sample input file [example] 
+└── docs/                           # Documentation
+│   ├── Meeting Reports             
+│   └── Class Definition  
+│   └── Class Diagram
+│   └── Project Structure               
+│   └── State transition diagram                   
+│   └── Use Case Diagram                 
