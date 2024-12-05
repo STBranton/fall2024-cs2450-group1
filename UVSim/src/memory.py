@@ -1,5 +1,5 @@
 """
-Memory Management (100-word memory), this represents the UVSim's memory
+Memory Management (customizable word memory size, 6 digit word), this represents the UVSim's memory
 """
 
 class Memory:
@@ -48,8 +48,11 @@ class Memory:
             if len(core_instruction) == 4:
                 core_instruction = "0" + core_instruction[:2] + "0" + core_instruction[2:]
 
-            signed_instruction = instruction[0] + core_instruction if instruction[0] in "+-" else core_instruction
-            self.memory[i] = int(signed_instruction)
+            try:
+                signed_instruction = instruction[0] + core_instruction if instruction[0] in "+-" else core_instruction
+                self.memory[i] = int(signed_instruction)
+            except ValueError:
+                raise ValueError("Please insure all program instructions are integers")
 
     def get_value(self, address):
         """

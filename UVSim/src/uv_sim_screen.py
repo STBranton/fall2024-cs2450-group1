@@ -195,8 +195,8 @@ class UVSimScreen(Screen):
 
             # Update the output display
             self.output_display.text += f"Program Loaded:\n{machine_instructions}\n"
-        except ValueError:
-            self.output_display.text += "Error: Invalid instructions. Please ensure all lines contain integers.\n"
+        except Exception as e:
+            self.output_display.text += f"Error: {e}.\n"
             return
 
         if not self.is_loaded:
